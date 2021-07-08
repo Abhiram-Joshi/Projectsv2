@@ -38,7 +38,6 @@ class AuthAdminAPIView(APIView):
         return Response(response)
 
 
-
 class AuthAPIView(APIView):
     permission_classes = (AllowAny,)
 

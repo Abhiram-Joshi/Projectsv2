@@ -19,5 +19,5 @@ class UserManager(BaseUserManager):
 
         if info.get("role") != "admin":
             raise ValueError(ugettext_lazy("Superuser must have admin role"))
-            
+
         return self.create_user(uuid, password, **info)
