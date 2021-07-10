@@ -34,11 +34,21 @@ class ProjectDataAPIView(APIView):
 
             data.append(dict())
             repo_data = data[i]
-            print(response.status_code)
+
+
+            # Name of repo
             repo_data["name"] = response_json["name"]
+
+
+            # URL of repo
             repo_data["html_url"] = response_json["html_url"]
+
+
+            # Number of issues of the repo
             repo_data["issues_count"] = response_json["open_issues_count"]
 
+
+            # Readme content of repo
             readme_info = requests.get(
                 f"{url}/contents/README.md",
                 headers=headers,
@@ -48,6 +58,31 @@ class ProjectDataAPIView(APIView):
             readme_info_json = readme_info.json()
 
             repo_data["readme_content"] = readme_info_json["content"]
+
+
+            # Contributors of a repository
+            contributors = requests.get(
+                f"{url}/contributors",
+                headers=headers,
+                auth=("Abhiram-Joshi", config("GITHUB_ACCESS_TOKEN")),
+            )
+
+            contributors_json = contributors.json()
+
+            response_contributors_list = []
+
+            for contributor in contributors_json:
+
+                response_contributor = {
+                    "name": contributor["login"],
+                    "avatar_url": contributor["avatar_url"],
+                    "profile_url": contributor["html_url"],
+                }
+
+                response_contributors_list.append(response_contributor)
+
+
+            repo_data["contributors"] = response_contributors_list
 
             i += 1
 
