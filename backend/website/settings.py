@@ -32,11 +32,11 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 # CORS
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_ALL_ORIGINS = True
 
 AUTH_USER_MODEL = "account.User"
-# Application definition
 
+# Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
