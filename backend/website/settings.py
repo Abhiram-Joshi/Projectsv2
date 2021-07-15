@@ -32,9 +32,12 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 # CORS
-CORS_ALLOWED_ORIGIN_REGEXES = [
-    r"http://localhost:3000/.*"
-]
+
+# CORS_ALLOWED_ORIGIN_REGEXES = [
+#     r"http://localhost:3000/.*"
+# ]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 AUTH_USER_MODEL = "account.User"
 
