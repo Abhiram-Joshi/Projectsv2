@@ -1,10 +1,12 @@
-import requests
 from decouple import config
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import status
 
-from .models import RepoModel
+from .models import ProjectModel
+from .serializers import GetRepoSerializer
+from . import utilities
 
 # Create your views here.
 
@@ -14,76 +16,101 @@ class ProjectDataAPIView(APIView):
 
     def get(self, request):
 
-        model_data = RepoModel.objects.all().values_list("url")
-        data = []
+        if request.user.role == "admin":
 
-        headers = {
-            "accept": "application/vnd.github.v3+json",
-        }
+            model_data = ProjectModel.objects.values()
+            field_names = [field.name for field in ProjectModel._meta.get_fields()]
+            repo_field_names = list(filter(lambda s: s.startswith("repo"), field_names))
 
-        i = 0
-        for (url,) in model_data:
+            data = []
+            
+            for instance_data in model_data:
+                repo_data = dict()
 
-            response = requests.get(
-                url,
-                headers=headers,
-                auth=("Abhiram-Joshi", config("GITHUB_ACCESS_TOKEN")),
-            )
+                for i in repo_field_names:
+                    repo_data[i] = instance_data[i]
 
-            response_json = response.json()
+                data.append(repo_data)
 
-            data.append(dict())
-            repo_data = data[i]
+            return Response(data, status=status.HTTP_200_OK)
 
-
-            # Name of repo
-            repo_data["name"] = response_json["name"]
+        else:
+            response = {"message": "User not authenticated"}
+            return Response(response, status=status.HTTP_403_FORBIDDEN)
 
 
-            # URL of repo
-            repo_data["html_url"] = response_json["html_url"]
+class ProjectIssuesAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
 
+    def get(self, request):
+        if request.user.role == "admin":
+            serializer = GetRepoSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            repo_name = serializer.validated_data["repo_name"]
+            repo_data = dict()
 
             # Number of issues of the repo
-            repo_data["issues_count"] = response_json["open_issues_count"]
+            repo_data = utilities.count_issues(repo_name)
+
+            return Response(repo_data, status=status.HTTP_200_OK)
+
+        else:
+            response = {"message": "User not authenticated"}
+            return Response(response, status=status.HTTP_403_FORBIDDEN)
 
 
-            # Readme content of repo
-            readme_info = requests.get(
-                f"{url}/contents/README.md",
-                headers=headers,
-                auth=("Abhiram-Joshi", config("GITHUB_ACCESS_TOKEN")),
-            )
+class ProjectContributorsAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
 
-            readme_info_json = readme_info.json()
+    def get(self, request):
+        
+        if request.user.role == "admin":
+            serializer = GetRepoSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            repo_name = serializer.validated_data["repo_name"]
 
-            repo_data["readme_content"] = readme_info_json["content"]
+            repo_data = utilities.get_contributors(repo_name)
 
+            return Response(repo_data, status=status.HTTP_200_OK)
 
-            # Contributors of a repository
-            contributors = requests.get(
-                f"{url}/contributors",
-                headers=headers,
-                auth=("Abhiram-Joshi", config("GITHUB_ACCESS_TOKEN")),
-            )
-
-            contributors_json = contributors.json()
-
-            response_contributors_list = []
-
-            for contributor in contributors_json:
-
-                response_contributor = {
-                    "name": contributor["login"],
-                    "avatar_url": contributor["avatar_url"],
-                    "profile_url": contributor["html_url"],
-                }
-
-                response_contributors_list.append(response_contributor)
+        else:
+            response = {"message": "User not authenticated"}
+            return Response(response, status=status.HTTP_403_FORBIDDEN)
 
 
-            repo_data["contributors"] = response_contributors_list
+class ProjectLanguagesAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
 
-            i += 1
+    def get(self, request):
 
-        return Response(data)
+        if request.user.role == "admin":
+            serializer = GetRepoSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            repo_name = serializer.validated_data["repo_name"]
+
+            repo_data = utilities.get_languages(repo_name)
+
+            return Response(repo_data, status=status.HTTP_200_OK)
+
+        else:
+            response = {"message": "User not authenticated"}
+            return Response(response, status=status.HTTP_403_FORBIDDEN)
+
+
+class ProjectPullRequestsAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        
+        if request.user.role == "admin":
+            serializer = GetRepoSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            repo_name = serializer.validated_data["repo_name"]
+
+            repo_data = utilities.count_pull_requests(repo_name)
+
+            return Response(repo_data, status=status.HTTP_200_OK)
+
+        else:
+            response = {"message": "User not authenticated"}
+            return Response(response, status=status.HTTP_403_FORBIDDEN)
