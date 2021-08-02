@@ -22,8 +22,12 @@ class AuthAdminAPIView(APIView):
         serializer.is_valid(raise_exception=True)
 
         uuid = serializer.validated_data["uuid"]
+        name = serializer.validated_data["name"]
 
-        user, created = User.objects.get_or_create(uuid=uuid)
+        user, created = User.objects.get_or_create(
+            uuid=uuid,
+            name=name,
+        )
         user.role = "admin"
         user.save()
 
@@ -48,8 +52,12 @@ class AuthAPIView(APIView):
         serializer.is_valid(raise_exception=True)
 
         uuid = serializer.validated_data["uuid"]
+        name = serializer.validated_data["name"]
 
-        User.objects.get_or_create(uuid=uuid)
+        User.objects.get_or_create(
+            uuid=uuid,
+            name=name
+        )
 
         access_token = generate_access_token(uuid, "user")
         refresh_token = generate_refresh_token(uuid, "user")
