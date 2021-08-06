@@ -55,6 +55,8 @@ class OrgCommandAPIView(APIView):
                     return Response(response, status=status.HTTP_201_CREATED)
 
                 except:
+                    import traceback
+                    traceback.print_exc()
                     response = {"message": "Repository not created"}
                     return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
@@ -82,9 +84,14 @@ class OrgCommandAPIView(APIView):
             if response:
                 response = dict()
                 response["message"] = "Repository deleted"
-                instance = ProjectModel.objects.get(repo_name=match.group("repo_name"))
-                instance.delete()
-                return Response(response, status=status.HTTP_202_ACCEPTED)
+                try:
+                    instance = ProjectModel.objects.get(repo_name=match.group("repo_name"))
+                    contributor_instance = instance.repo_contributors.all()
+                    contributor_instance.delete()
+                    instance.delete()
+
+                finally:
+                    return Response(response, status=status.HTTP_202_ACCEPTED)
 
             else:
                 response = dict()

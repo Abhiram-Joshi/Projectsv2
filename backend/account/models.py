@@ -14,7 +14,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         ("admin", "Admin"),
     )
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default="user")
-    project = models.ManyToManyField(ProjectModel)
 
     USERNAME_FIELD = "uuid"
     REQUIRED_FIELDS = []

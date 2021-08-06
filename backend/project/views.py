@@ -21,6 +21,7 @@ class ProjectDataAPIView(APIView):
             model_data = ProjectModel.objects.values()
             field_names = [field.name for field in ProjectModel._meta.get_fields()]
             repo_field_names = list(filter(lambda s: s.startswith("repo"), field_names))
+            repo_field_names.remove("repo_contributors")
 
             data = []
             
@@ -29,6 +30,8 @@ class ProjectDataAPIView(APIView):
 
                 for i in repo_field_names:
                     repo_data[i] = instance_data[i]
+
+                repo_data["repo_contributors"] = ProjectModel.objects.get(repo_name=instance_data["repo_name"]).repo_contributors.values()
 
                 data.append(repo_data)
 

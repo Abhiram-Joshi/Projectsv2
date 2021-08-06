@@ -1,6 +1,6 @@
 import requests
 from decouple import config
-from project.models import ProjectModel
+from project.models import ProjectModel, ContibutorModel
 from django.core.exceptions import ObjectDoesNotExist
 from project import utilities
 
@@ -41,10 +41,22 @@ def create_repo(match):
     instance.repo_api_url = response_json["url"]
     instance.repo_html_url = response_json["html_url"]
     instance.repo_description = response_json["description"]
-    instance.repo_languages = utilities.get_languages(response_json["name"])
-    instance.repo_issues = utilities.count_issues(response_json["name"])
-    instance.repo_pull_requests = utilities.count_pull_requests(response_json["name"])
+    instance.repo_languages = []
+    instance.repo_issues = 0
+    instance.repo_pull_requests = 0
     instance.save()
+
+    contributors_list = utilities.get_contributors(name)["contributors"]
+    for contributor in contributors_list:
+        contributor_instance = ContibutorModel()
+        contributor_instance.github_username = contributor["github_username"]
+        contributor_instance.profile_url = contributor["profile_url"]
+        contributor_instance.profile_url = contributor["profile_url"]
+        contributor_instance.avatar_url = contributor["avatar_url"]
+        contributor_instance.save()
+
+        instance.repo_contributors.add(contributor_instance)
+
 
     return response_json
 
@@ -83,9 +95,23 @@ def add_project_to_db(match):
         instance.repo_api_url = response_json["url"]
         instance.repo_html_url = response_json["html_url"]
         instance.repo_description = response_json["description"]
-        instance.repo_languages = utilities.get_languages(repo_name)
-        instance.repo_issues = utilities.count_issues(repo_name)
+        instance.repo_languages = utilities.get_languages(repo_name)["languages"]
+        instance.repo_issues = utilities.count_issues(repo_name)["issues_count"]
+        instance.repo_pull_requests = utilities.count_pull_requests(repo_name)["pull_request_count"]
         instance.save()
+
+        contributors_list = utilities.get_contributors(repo_name)["contributors"]
+
+        for contributor in contributors_list:
+            contributor_instance = ContibutorModel()
+            contributor_instance.github_username = contributor["github_username"]
+            contributor_instance.profile_url = contributor["profile_url"]
+            contributor_instance.profile_url = contributor["profile_url"]
+            contributor_instance.avatar_url = contributor["avatar_url"]
+            contributor_instance.save()
+
+            instance.repo_contributors.add(contributor_instance)
+
         func_response["message"] = "Repository added"
         func_response["status_code"] = response.status_code
 
@@ -102,6 +128,8 @@ def remove_project_from_db(match):
 
     try:
         instance = ProjectModel.objects.get(repo_name=repo_name)
+        contributor_instance = instance.repo_contributors.all()
+        contributor_instance.delete()
         instance.delete()
         response["message"] = "Repository removed"
         response["status_code"] = 200
