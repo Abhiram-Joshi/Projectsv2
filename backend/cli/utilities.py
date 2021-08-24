@@ -115,8 +115,12 @@ def add_project_to_db(match):
         func_response["message"] = "Repository added"
         func_response["status_code"] = response.status_code
 
+    elif ProjectModel.objects.filter(repo_name=repo_name).exists():
+        func_response["message"] = "Repository already exists"
+        func_response["status_code"] = 202
+
     else:
-        func_response["message"] = "Repository could not be added"
+        func_response["message"] = "Repository not found"
         func_response["status_code"] = 404 if response.status_code==200 else response.status_code
 
     return func_response

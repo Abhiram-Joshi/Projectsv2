@@ -122,6 +122,9 @@ class DbCommandAPIView(APIView):
             if response["status_code"] == 200:
                 return Response(response, status=status.HTTP_200_OK)
 
+            elif response["status_code"] == 202:
+                return Response(response, status=status.HTTP_202_ACCEPTED)
+
             else:
                 return Response(response, status=status.HTTP_404_NOT_FOUND)
 
