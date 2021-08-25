@@ -12,7 +12,7 @@ from . import utilities
 
 
 class ProjectDataAPIView(APIView):
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
 
     def get(self, request):
 
@@ -43,7 +43,7 @@ class ProjectDataAPIView(APIView):
 
 
 class ProjectIssuesAPIView(APIView):
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
 
     def get(self, request):
         if request.user.role == "admin":
@@ -63,7 +63,7 @@ class ProjectIssuesAPIView(APIView):
 
 
 class ProjectContributorsAPIView(APIView):
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
 
     def get(self, request):
         
@@ -82,7 +82,7 @@ class ProjectContributorsAPIView(APIView):
 
 
 class ProjectLanguagesAPIView(APIView):
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
 
     def get(self, request):
 
@@ -101,7 +101,7 @@ class ProjectLanguagesAPIView(APIView):
 
 
 class ProjectPullRequestsAPIView(APIView):
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
 
     def get(self, request):
         
