@@ -1,5 +1,5 @@
 from decouple import config
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
@@ -12,7 +12,7 @@ from . import utilities
 
 
 class ProjectDataAPIView(APIView):
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
     def get(self, request):
 
@@ -43,7 +43,7 @@ class ProjectDataAPIView(APIView):
 
 
 class ProjectIssuesAPIView(APIView):
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
     def get(self, request):
         # if request.user.role == "admin":
@@ -63,7 +63,7 @@ class ProjectIssuesAPIView(APIView):
 
 
 class ProjectContributorsAPIView(APIView):
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
     def get(self, request):
         
@@ -82,7 +82,7 @@ class ProjectContributorsAPIView(APIView):
 
 
 class ProjectLanguagesAPIView(APIView):
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
     def get(self, request):
 
@@ -101,7 +101,7 @@ class ProjectLanguagesAPIView(APIView):
 
 
 class ProjectPullRequestsAPIView(APIView):
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
     def get(self, request):
         
@@ -117,3 +117,20 @@ class ProjectPullRequestsAPIView(APIView):
         # else:
         #     response = {"message": "User not authenticated"}
         #     return Response(response, status=status.HTTP_403_FORBIDDEN)
+
+
+class ProjectYearAPIView(APIView):
+    permission_classes = (AllowAny,)
+    
+    def get(self, request):
+        repo_data = []
+
+        instance = ProjectModel.objects.values_list("repo_name", "repo_creation_date")
+
+        for repo_name, repo_creation_date in instance:
+            temp = dict()
+            temp["repo_name"] = repo_name
+            temp["repo_creation_year"] = repo_creation_date.year
+            repo_data.append(temp)
+
+        return Response(repo_data, status=status.HTTP_200_OK)

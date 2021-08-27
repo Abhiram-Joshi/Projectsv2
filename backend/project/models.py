@@ -17,3 +17,4 @@ class ProjectModel(models.Model):
     repo_issues = models.IntegerField(default=0)
     repo_pull_requests = models.IntegerField(default=0)
     repo_contributors = models.ManyToManyField(ContibutorModel, blank=None)
+    repo_creation_date = models.DateTimeField()

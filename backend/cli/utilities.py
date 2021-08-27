@@ -44,6 +44,7 @@ def create_repo(match):
     instance.repo_languages = []
     instance.repo_issues = 0
     instance.repo_pull_requests = 0
+    instance.repo_creation_year = response_json["created_at"]
     instance.save()
 
     contributors_list = utilities.get_contributors(name)["contributors"]
@@ -98,6 +99,7 @@ def add_project_to_db(match):
         instance.repo_languages = utilities.get_languages(repo_name)["languages"]
         instance.repo_issues = utilities.count_issues(repo_name)["issues_count"]
         instance.repo_pull_requests = utilities.count_pull_requests(repo_name)["pull_request_count"]
+        instance.repo_creation_date = response_json["created_at"]
         instance.save()
 
         contributors_list = utilities.get_contributors(repo_name)["contributors"]
