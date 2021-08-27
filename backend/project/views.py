@@ -123,7 +123,7 @@ class ProjectYearAPIView(APIView):
     permission_classes = (AllowAny,)
     
     def get(self, request):
-        repo_data = []
+        repo_data = {"data":[]}
 
         instance = ProjectModel.objects.values_list("repo_name", "repo_creation_date")
 
@@ -131,6 +131,6 @@ class ProjectYearAPIView(APIView):
             temp = dict()
             temp["repo_name"] = repo_name
             temp["repo_creation_year"] = repo_creation_date.year
-            repo_data.append(temp)
+            repo_data["data"].append(temp)
 
         return Response(repo_data, status=status.HTTP_200_OK)
