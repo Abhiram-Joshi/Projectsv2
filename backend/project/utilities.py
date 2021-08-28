@@ -10,7 +10,7 @@ def count_pull_requests(repo_name):
     }
 
     response = requests.get(
-        f"https://api.github.com/repos/Projectsv2/{repo_name}/issues",
+        f"https://api.github.com/repos/CodeChefVIT/{repo_name}/issues",
         headers=headers,
         auth=("Abhiram-Joshi", config("GITHUB_ACCESS_TOKEN")),
     )
@@ -40,7 +40,7 @@ def count_issues(repo_name):
     }
 
     response = requests.get(
-        f"https://api.github.com/repos/Projectsv2/{repo_name}",
+        f"https://api.github.com/repos/CodeChefVIT/{repo_name}",
         headers=headers,
         auth=("Abhiram-Joshi", config("GITHUB_ACCESS_TOKEN")),
     )
@@ -70,7 +70,7 @@ def get_contributors(repo_name):
     }
 
     response = requests.get(
-        f"https://api.github.com/repos/Projectsv2/{repo_name}/contributors",
+        f"https://api.github.com/repos/CodeChefVIT/{repo_name}/contributors",
         headers=headers,
         auth=("Abhiram-Joshi", config("GITHUB_ACCESS_TOKEN")),
     )
@@ -109,14 +109,15 @@ def get_languages(repo_name):
     }
 
     response = requests.get(
-        f"https://api.github.com/repos/Projectsv2/{repo_name}/languages",
+        f"https://api.github.com/repos/CodeChefVIT/{repo_name}/languages",
         headers=headers,
         auth=("Abhiram-Joshi", config("GITHUB_ACCESS_TOKEN")),
     )
 
     if response.status_code == 200:
         response_json = response.json()
-        langs = [k for k,_ in response_json]
+        print(response_json)
+        langs = [k for k in response_json]
 
         try:
             instance = ProjectModel.objects.get(repo_name=repo_name)
