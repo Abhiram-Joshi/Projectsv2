@@ -32,6 +32,7 @@ class ProjectDataAPIView(APIView):
                 repo_data[i] = instance_data[i]
 
             repo_data["repo_contributors"] = ProjectModel.objects.get(repo_name=instance_data["repo_name"]).repo_contributors.values()
+            repo_data["repo_creation_date"] = repo_data["repo_creation_date"].year
 
             data.append(repo_data)
 
