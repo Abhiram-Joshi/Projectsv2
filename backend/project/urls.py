@@ -9,4 +9,5 @@ urlpatterns = [
     url(r"languages", views.ProjectLanguagesAPIView.as_view(), name="project_languages"),
     url(r"pull_requests", views.ProjectPullRequestsAPIView.as_view(), name="project_pull_requests"),
     url(r"get_year", views.ProjectYearAPIView.as_view(), name="project_year"),
+    url(r"upload_image", views.ProjectImageUploadAPIView.as_view(), name="upload_thumbnail_image")
 ]

@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 
 from .models import ProjectModel
-from .serializers import GetRepoSerializer
+from .serializers import GetRepoSerializer, UploadImageSerializer
 from . import utilities
 
 # Create your views here.
@@ -138,3 +138,34 @@ class ProjectYearAPIView(APIView):
             repo_data["data"].append(temp)
 
         return Response(repo_data, status=status.HTTP_200_OK)
+
+class ProjectImageUploadAPIView(APIView):
+    permission_classes = (AllowAny,)
+
+    def post(self, request):
+        serializer = UploadImageSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        repo_name = serializer.validated_data["repo_name"]
+        base64_data = serializer.validated_data["repo_thumbnail"]
+
+        try:
+            instance = ProjectModel.objects.get(repo_name=repo_name)
+            instance.repo_thumbnail = base64_data
+            instance.save()
+
+            return Response(
+                {
+                    "message":"success",
+                    "status_code":200
+                },
+                status = status.HTTP_200_OK
+            )
+        
+        except:
+            return Response(
+                {
+                    "message":"Repository not found",
+                    "status_code":404
+                },
+                status = status.HTTP_404_NOT_FOUND
+            )
