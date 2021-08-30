@@ -2,6 +2,7 @@
 migrations
 tasks.py
 celery.py
+refresh_script.sh
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

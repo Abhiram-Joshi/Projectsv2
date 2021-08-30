@@ -2,7 +2,7 @@
 
 # __all__ = ["celery_app"]
 
-import subprocess
+# import subprocess
 
 # print(subprocess.run("* * * * * python manage.py refresh"))
-print(subprocess.call(["bash","refresh_script.sh"]))
+# print(subprocess.call(["bash","refresh_script.sh"]))
