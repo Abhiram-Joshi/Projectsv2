@@ -6,7 +6,7 @@ class Command(BaseCommand):
     help = "Refreshes data in the database"
 
     def add_arguments(self, parser):
-        parser.add_argument('refresh', nargs="+", type=str)
+        parser.add_argument('refresh', nargs="?", type=str)
 
     def handle(self, **options):
         repo_names = ProjectModel.objects.values_list("repo_name", flat=True)

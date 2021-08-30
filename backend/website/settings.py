@@ -32,12 +32,12 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 # CORS
-
-# CORS_ALLOWED_ORIGIN_REGEXES = [
-#     r"http://localhost:3000/.*"
-# ]
-
 CORS_ALLOW_ALL_ORIGINS = True
+
+# #Celery
+# CELERY_TASK_TIME_LIMIT = 4
+# # CELERYD_TIME_LIMIT = 4
+# # task_time_limit = 5
 
 AUTH_USER_MODEL = "account.User"
 
@@ -96,8 +96,19 @@ WSGI_APPLICATION = "website.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {}
-DATABASES["default"] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+# DATABASES = {}
+# DATABASES["default"] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "postgres",
+        "USER": "postgres",
+        "PASSWORD": config("DB_PASSWORD"),
+        "HOST": "localhost",
+        "PORT": "5432",
+    }
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

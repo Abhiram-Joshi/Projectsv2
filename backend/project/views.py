@@ -23,7 +23,7 @@ class ProjectDataAPIView(APIView):
         repo_field_names = list(filter(lambda s: s.startswith("repo"), field_names))
         repo_field_names.remove("repo_contributors")
 
-        data = []
+        data = {}
         
         for instance_data in model_data:
             repo_data = dict()
@@ -31,10 +31,16 @@ class ProjectDataAPIView(APIView):
             for i in repo_field_names:
                 repo_data[i] = instance_data[i]
 
-            repo_data["repo_contributors"] = ProjectModel.objects.get(repo_name=instance_data["repo_name"]).repo_contributors.values()
-            repo_data["repo_creation_date"] = repo_data["repo_creation_date"].year
 
-            data.append(repo_data)
+            repo_data["repo_contributors"] = ProjectModel.objects.get(repo_name=instance_data["repo_name"]).repo_contributors.values()
+
+            # data.append(repo_data)
+
+            if data.get(repo_data["repo_creation_date"].year):
+                data[repo_data["repo_creation_date"].year].append(repo_data)
+            
+            else:
+                data[repo_data["repo_creation_date"].year] = [repo_data,]
 
         return Response(data, status=status.HTTP_200_OK)
 
