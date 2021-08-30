@@ -28,7 +28,7 @@ def create_repo(match):
     body = {k: v for (k, v) in body.items() if v != None}
 
     response = requests.post(
-        f"https://api.github.com/orgs/CodeChefVIT/repos",
+        f"https://api.github.com/orgs/{config('ORGANISATION')}/repos",
         json=body,
         headers=headers,
         auth=("Abhiram-Joshi", config("GITHUB_ACCESS_TOKEN")),
@@ -66,7 +66,7 @@ def delete_repo(match):
     repo_name = match.group("repo_name")
 
     response = requests.delete(
-        f"https://api.github.com/repos/CodeChefVIT/{repo_name}",
+        f"https://api.github.com/repos/{config('ORGANISATION')}/{repo_name}",
         auth=("Abhiram-Joshi", config("GITHUB_ACCESS_TOKEN")),
     )
 
@@ -83,7 +83,7 @@ def add_project_to_db(match):
     }
 
     response = requests.get(
-        f"https://api.github.com/repos/CodeChefVIT/{repo_name}",
+        f"https://api.github.com/repos/{config('ORGANISATION')}/{repo_name}",
         headers=headers,
         auth=("Abhiram-Joshi", config("GITHUB_ACCESS_TOKEN")),
     )

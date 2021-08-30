@@ -3,6 +3,7 @@ from decouple import config
 from .models import ProjectModel
 
 def count_pull_requests(repo_name):
+    
     pull_request_count = 0
 
     headers = {
@@ -10,7 +11,7 @@ def count_pull_requests(repo_name):
     }
 
     response = requests.get(
-        f"https://api.github.com/repos/CodeChefVIT/{repo_name}/issues",
+        f"https://api.github.com/repos/{config('ORGANISATION')}/{repo_name}/issues",
         headers=headers,
         auth=("Abhiram-Joshi", config("GITHUB_ACCESS_TOKEN")),
     )
@@ -40,7 +41,7 @@ def count_issues(repo_name):
     }
 
     response = requests.get(
-        f"https://api.github.com/repos/CodeChefVIT/{repo_name}",
+        f"https://api.github.com/repos/{config('ORGANISATION')}/{repo_name}",
         headers=headers,
         auth=("Abhiram-Joshi", config("GITHUB_ACCESS_TOKEN")),
     )
@@ -70,7 +71,7 @@ def get_contributors(repo_name):
     }
 
     response = requests.get(
-        f"https://api.github.com/repos/CodeChefVIT/{repo_name}/contributors",
+        f"https://api.github.com/repos/{config('ORGANISATION')}/{repo_name}/contributors",
         headers=headers,
         auth=("Abhiram-Joshi", config("GITHUB_ACCESS_TOKEN")),
     )
@@ -109,7 +110,7 @@ def get_languages(repo_name):
     }
 
     response = requests.get(
-        f"https://api.github.com/repos/CodeChefVIT/{repo_name}/languages",
+        f"https://api.github.com/repos/{config('ORGANISATION')}/{repo_name}/languages",
         headers=headers,
         auth=("Abhiram-Joshi", config("GITHUB_ACCESS_TOKEN")),
     )
