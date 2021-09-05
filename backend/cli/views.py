@@ -57,7 +57,7 @@ class OrgCommandAPIView(APIView):
                 except:
                     import traceback
                     traceback.print_exc()
-                    response = {"message": "Repository not created"}
+                    response = {"message": "Repository name already in use"}
                     return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
             else:
