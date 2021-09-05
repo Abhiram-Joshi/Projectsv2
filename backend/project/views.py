@@ -1,4 +1,5 @@
 from decouple import config
+import requests
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -34,7 +35,15 @@ class ProjectDataAPIView(APIView):
 
             repo_data["repo_contributors"] = ProjectModel.objects.get(repo_name=instance_data["repo_name"]).repo_contributors.values()
 
-            # data.append(repo_data)
+
+            response = requests.get(
+                f"https://api.github.com/repos/{config('ORGANISATION')}/{instance_data['repo_name']}",
+                headers = {"accept": "application/vnd.github.v3+json"},
+                auth=("Abhiram-Joshi", config("GITHUB_ACCESS_TOKEN")),
+            ).json()
+
+            repo_data["stargazers_count"] = response["stargazers_count"]
+
 
             if data.get(repo_data["repo_creation_date"].year):
                 data[repo_data["repo_creation_date"].year].append(repo_data)
