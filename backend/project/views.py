@@ -32,10 +32,6 @@ class ProjectDataAPIView(APIView):
             for i in repo_field_names:
                 repo_data[i] = instance_data[i]
 
-
-            repo_data["repo_contributors"] = ProjectModel.objects.get(repo_name=instance_data["repo_name"]).repo_contributors.values()
-
-
             response = requests.get(
                 f"https://api.github.com/repos/{config('ORGANISATION')}/{instance_data['repo_name']}",
                 headers = {"accept": "application/vnd.github.v3+json"},
@@ -43,6 +39,11 @@ class ProjectDataAPIView(APIView):
             ).json()
 
             repo_data["stargazers_count"] = response["stargazers_count"]
+            repo_data["repo_pull_requests"] = utilities.count_pull_requests(instance_data["repo_name"])["pull_request_count"]
+            repo_data["repo_issues"] = response["open_issues_count"]
+            repo_data["repo_forks"] = response["forks_count"]
+
+            repo_data["repo_contributors"] = ProjectModel.objects.get(repo_name=instance_data["repo_name"]).repo_contributors.values()
 
 
             if data.get(repo_data["repo_creation_date"].year):
